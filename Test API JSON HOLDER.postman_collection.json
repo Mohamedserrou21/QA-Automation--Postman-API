@@ -1,0 +1,232 @@
+{
+	"info": {
+		"_postman_id": "29b55394-0565-41cd-95e1-e6eb7ed6a8bb",
+		"name": "Test API JSON HOLDER",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "19734254"
+	},
+	"item": [
+		{
+			"name": "StautCode",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"  pm.response.to.have.status(200);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://jsonplaceholder.typicode.com/",
+					"protocol": "https",
+					"host": [
+						"jsonplaceholder",
+						"typicode",
+						"com"
+					],
+					"path": [
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "users",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Status code is 200', function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Il doit y avoir exactement 10 utilisateurs\", function() {\r",
+							"    pm.expect(pm.response.json().length).to.equal(10);\r",
+							"});\r",
+							"pm.test(\"Tous les champs doivent être complétés pour chaque utilisateur\", function() {\r",
+							"    var users = pm.response.json();\r",
+							"\r",
+							"    // Parcourez chaque utilisateur dans le tableau\r",
+							"    users.forEach(function(user) {\r",
+							"       \r",
+							"        pm.expect(user.id).to.exist;\r",
+							"        pm.expect(user.username).to.exist;\r",
+							"        pm.expect(user.email).to.exist;\r",
+							"        pm.expect(user.address).to.exist;\r",
+							"     \r",
+							"    });\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://jsonplaceholder.typicode.com/users",
+					"protocol": "https",
+					"host": [
+						"jsonplaceholder",
+						"typicode",
+						"com"
+					],
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "posts",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Récupère la variable d'environnement userId\r",
+							"const userId = pm.environment.get(\"userId\");\r",
+							"\r",
+							"// Vérifie si la variable userId est définie\r",
+							"pm.test(\"La variable userId doit être définie\", function () {\r",
+							"    pm.expect(userId).to.not.be.null;\r",
+							"});\r",
+							"\r",
+							"// Effectue une requête GET pour récupérer les posts de l'utilisateur\r",
+							"pm.sendRequest({\r",
+							"    url: `https://jsonplaceholder.typicode.com/users/${userId}/posts`,\r",
+							"    method: 'GET',\r",
+							"    header: {\r",
+							"        'Content-Type': 'application/json',\r",
+							"    },\r",
+							"}, function (error, postsResponse) {\r",
+							"    // Vérifie s'il y a une erreur dans la requête\r",
+							"    pm.test(\"La requête GET doit être réussie\", function () {\r",
+							"        pm.expect(error).to.be.null;\r",
+							"    });\r",
+							"\r",
+							"    // Vérifie le code d'état de la réponse\r",
+							"    pm.test(\"Le code d'état doit être 200\", function () {\r",
+							"        pm.expect(postsResponse.code).to.equal(200);\r",
+							"    });\r",
+							"\r",
+							"    // Vérifie que le corps de la réponse est un tableau\r",
+							"    pm.test(\"Le corps de la réponse doit être un tableau\", function () {\r",
+							"        pm.expect(postsResponse.json()).to.be.an('array');\r",
+							"    });\r",
+							"\r",
+							"    // Vérifie que le nombre de posts est égal à 10\r",
+							"    pm.test(\"Le nombre de posts doit être égal à 10\", function () {\r",
+							"        const posts = postsResponse.json();\r",
+							"        pm.expect(posts).to.have.length(10, \"Le nombre de posts doit être égal à 10\");\r",
+							"\r",
+							"        // Vérifie que chaque post a un titre\r",
+							"    pm.test(\"Chaque post doit avoir un titre\", function () {\r",
+							"            posts.forEach(function (post) {\r",
+							"                pm.expect(post.title).to.exist;\r",
+							"            });\r",
+							"        });\r",
+							"    });\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://jsonplaceholder.typicode.com/users/1/posts",
+					"protocol": "https",
+					"host": [
+						"jsonplaceholder",
+						"typicode",
+						"com"
+					],
+					"path": [
+						"users",
+						"1",
+						"posts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreatePost",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const newPost = {\r",
+							"    title: 'TEST',\r",
+							"    body: 'Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.',\r",
+							"    userId: 1,\r",
+							"};\r",
+							"\r",
+							"pm.sendRequest({\r",
+							"    url: `https://jsonplaceholder.typicode.com/users/${newPost.userId}/posts`,\r",
+							"    method: 'POST',\r",
+							"    header: {\r",
+							"        'Content-Type': 'application/json',\r",
+							"    },\r",
+							"    body: {\r",
+							"        mode: 'raw',\r",
+							"        raw: JSON.stringify(newPost),\r",
+							"    },\r",
+							"}, function (error, postsResponse) {\r",
+							"    // Vérifie s'il y a une erreur dans la requête\r",
+							"    pm.test(\"Le code d'état doit être 201\", function () {\r",
+							"        pm.expect(postsResponse.code).to.equal(201);\r",
+							"    });\r",
+							"\r",
+							"    pm.test(\"Création du post pour user 1\", function () {\r",
+							"        const response = postsResponse.json();\r",
+							"        pm.expect(response.title).to.eql(newPost.title);\r",
+							"        pm.expect(response.body).to.eql(newPost.body);\r",
+							"        pm.expect(response.id).to.be.a('number').greaterThan(0);\r",
+							"    });\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "https://jsonplaceholder.typicode.com/posts",
+					"protocol": "https",
+					"host": [
+						"jsonplaceholder",
+						"typicode",
+						"com"
+					],
+					"path": [
+						"posts"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
